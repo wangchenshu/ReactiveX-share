@@ -1,0 +1,255 @@
+* ReactiveX
+
+** ReactiveX
+*** Rx 介紹
+
+**** ReactiveX 的歷史
+ReactiveX是Reactive Extensions的縮寫，一般簡寫為Rx，最初是LINQ的一個擴展，
+由微軟的架構師Erik Meijer領導的團隊開發，在2012年11月開源，Rx是一個編程模型，
+目標是提供一致的編程接口，幫助開發者更方便的處理異步數據流，Rx庫支持.NET、JavaScript和C++，
+Rx近幾年越來越流行了，現在已經支持幾乎全部的流行編程語言了，Rx的大部分語言庫由ReactiveX這個組織負責維護，
+比較流行的有RxJava/RxJS/Rx.NET，社區網站是reactivex.io。
+
+**** 什麼是 ReactiveX
+微軟給的定義是，Rx是一個函數庫，讓開發者可以利用可觀察序列和LINQ風格查詢操作符來編寫異步和基於事件的程序，
+使用Rx，開發者可以用Observables表示異步數據流，用LINQ操作符查詢異步數據流，
+用Schedulers參數化異步數據流的並發處理，Rx可以這樣定義：Rx = Observables + LINQ + Schedulers。
+
+ReactiveX.io給的定義是，Rx是一個使用可觀察數據流進行異步編程的編程接口，ReactiveX結合了觀察者模式、
+迭代器模式和函數式編程的精華。
+
+**** ReactiveX 的應用
+很多公司都在使用ReactiveX，例如Microsoft、Netflix、Github、Trello、SoundCloud。
+
+*** Rx 模式
+
+**** 使用觀察者模式
+***** 創建
+Rx可以方便的創建事件流和數據流
+
+***** 組合
+Rx使用查詢式的操作符組合和變換數據流
+
+***** 監聽
+Rx可以訂閱任何可觀察的數據流並執行操作
+
+**** 簡化代碼
+***** 函數式風格
+對可觀察數據流使用無副作用的輸入輸出函數，避免了程序裡錯綜複雜的狀態
+
+***** 簡化代碼
+Rx的操作符通通常可以將復雜的難題簡化為很少的幾行代碼
+
+***** 異步錯誤處理
+傳統的try/catch沒辦法處理異步計算，Rx提供了合適的錯誤處理機制
+
+***** 輕鬆使用並發
+Rx的Observables和Schedulers讓開發者可以擺脫底層的線程同步和各種並發問題
+
+**** 使用Observable的優勢
+Rx擴展了觀察者模式用於支持數據和事件序列，添加了一些操作符，它讓你可以聲明式的組合這些序列，
+而無需關注底層的實現：如線程、同步、線程安全、並發數據結構和非阻塞IO。
+
+Observable通過使用最佳的方式訪問異步數據序列填補了這個間隙。
+Rx的Observable模型讓你可以像使用集合數據一樣操作異步事件流，對異步事件流使用各種簡單、可組合的操作。
+
+***** Observable可組合
+對於單層的異步操作來說，Java中Future對象的處理方式是非常簡單有效的，但是一旦涉及到嵌套，
+它們就開始變得異常繁瑣和復雜。使用Future很難很好的組合帶條件的異步執行流程
+（考慮到運行時各種潛在的問題，甚至可以說是不可能的），當然，要想實現還是可以做到的，但是非常困難，
+或許你可以用Future.get()，但這樣做，異步執行的優勢就完全沒有了。
+從另一方面說，Rx的Observable一開始就是為組合異步數據流準備的。
+
+***** Observable更靈活
+Rx的Observable不僅支持處理單獨的標量值（就像Future可以做的），也支持數據序列，甚至是無窮的數據流。
+Observable是一個抽象概念，適用於任何場景。 Observable擁有它的近親Iterable的全部優雅與靈活。
+
+Observable是異步的雙向push，Iterable是同步的單向pull。
+
+***** Observable無偏見
+Rx對於對於並發性或異步性沒有任何特殊的偏好，Observable可以用任何方式實現，線程池、事件循環、非阻塞IO、Actor模式，
+任何滿足你的需求的，你擅長或偏好的方式都可以。無論你選擇怎樣實現它，無論底層實現是阻塞的還是非阻塞的，
+客戶端代碼將所有與Observable的交互都當做是異步的。
+
+****** Observable是如何實現的？
+#+NAME: 
+#+BEGIN_SRC
+public Observable<data> getData();
+#+END_SRC
+
+****** 使用回調存在很多問題
+回調在不阻塞任何事情的情況下，解決了Future.get()過早阻塞的問題。由於響應結果一旦就緒Callback就會被調用，
+它們天生就是高效率的。不過，就像使用Future一樣，對於單層的異步執行來說，回調很容易使用，對於嵌套的異步組合，它們顯得非常笨拙。
+
+****** Rx是一個多語言的實現
+Rx在大量的編程語言中都有實現，並尊重實現語言的風格，而且更多的實現正在飛速增加。
+
+****** 響應式編程
+Rx提供了一系列的操作符，你可以使用它們來過濾(filter)、選擇(select)、變換(transform)、結合(combine)和組合(compose)多個Observable，
+這些操作符讓執行和復合變得非常高效。
+
+你可以把Observable當做Iterable的推送方式的等價物，使用Iterable，消費者從生產者那拉取數據，線程阻塞直至數據準備好。使用Observable，
+在數據準備好時，生產者將數據推送給消費者。數據可以同步或異步的到達，這種方式更靈活。
+
+下面的例子展示了相似的高階函數在Iterable和Observable上的應用
+#+NAME: 
+#+BEGIN_SRC
+// Iterable
+getDataFromLocalMemory()
+  .skip(10)
+  .take(5)
+  .map({ s -> return s + " transformed" })
+  .forEach({ println "next => " + it })
+
+// Observable
+getDataFromNetwork()
+  .skip(10)
+  .take(5)
+  .map({ s -> return s + " transformed" })
+  .subscribe({ println "onNext => " + it })
+#+END_SRC
+
+Observable類型給GOF的觀察者模式添加了兩種缺少的語義，這樣就和Iterable類型中可用的操作一致了：
+1. 生產者可以發信號給消費者，通知它沒有更多數據可用了（對於Iterable，一個for循環正常完成表示沒有數據了；對於Observable，就是調用觀察者的onCompleted方法）
+2. 生產者可以發信號給消費者，通知它遇到了一個錯誤（對於Iterable，迭代過程中發生錯誤會拋出異常；對於Observable，就是調用觀察者(Observer)的onError方法）
+
+有了這兩種功能，Rx就能使Observable與Iterable保持一致了，唯一的不同是數據流的方向。任何對Iterable的操作，你都可以對Observable使用。
+
+**** 名词定义
+這裡給出一些名詞的翻譯
+
+***** Reactive 直譯為反應性的，有活性的，根據上下文一般翻譯為反應式、響應式
+***** Iterable 可迭代對象，支持以迭代器的形式遍歷，許多語言中都存在這個概念
+***** Observable 可觀察對象，在Rx中定義為更強大的Iterable，在觀察者模式中是被觀察的對象，一旦數據產生或發生變化，會通過某種方式通知觀察者或訂閱者
+***** Observer 觀察者對象，監聽Observable發射的數據並做出響應，Subscriber是它的一個特殊實現
+***** emit 直譯為發射，發布，發出，含義是Observable在數據產生或變化時發送通知給Observer，調用Observer對應的方法，文章裡一律譯為發射
+***** items 直譯為項目，條目，在Rx裡是指Observable發射的數據項，文章裡一律譯為數據，數據項
+
+** Observable
+*** 概述
+在ReactiveX中，一個觀察者(Observer)訂閱一個可觀察對象(Observable)。觀察者對Observable發射的數據或數據序列作出響應。
+這種模式可以極大地簡化並發操作，因為它創建了一個處於待命狀態的觀察者哨兵，在未來某個時刻響應Observable的通知，不需要阻塞等待Observable發射數據。
+
+*** 背景知識
+在很多軟件編程任務中，或多或少你都會期望你寫的代碼能按照編寫的順序，一次一個的順序執行和完成。但是在ReactiveX中，很多指令可能是並行執行的，
+之後他們的執行結果才會被觀察者捕獲，順序是不確定的。為達到這個目的，你定義一種獲取和變換數據的機制，而不是調用一個方法。在這種機制下，
+存在一個可觀察對象(Observable)，觀察者(Observer)訂閱(Subscribe)它，當數據就緒時，之前定義的機制就會分發數據給一直處於等待狀態的觀察者哨兵。
+
+這種方法的優點是，如果你有大量的任務要處理，它們互相之間沒有依賴關係。你可以同時開始執行它們，不用等待一個完成再開始下一個
+（用這種方式，你的整個任務隊列能耗費的最長時間，不會超過任務裡最耗時的那個）。
+
+有很多術語可用於描述這種異步編程和設計模式，在在本文裡我們使用這些術語：一個觀察者訂閱一個可觀察對象 (An observer subscribes to an Observable)。
+通過調用觀察者的方法，Observable發射數據或通知給它的觀察者。
+
+在其它的文檔和場景裡，有時我們也將Observer叫做Subscriber、Watcher、Reactor。這個模型通常被稱作Reactor模式。
+
+*** 創建觀察者
+本文使用Kotlin的偽代碼舉例，但是ReactiveX有多種語言的實現。
+
+普通的方法調用（不是某種異步方法，也不是Rx中的並行調用），流程通常是這樣的：
+1. 調用某一個方法
+2. 用一個變量保存方法返回的結果
+3. 使用這個變量和它的新值做些有用的事
+
+用代碼描述就是：
+#+NAME: 
+#+BEGIN_SRC
+// make the call, assign its return value to `returnVal`
+returnVal = someMethod(itsParameters);
+// do something useful with returnVal
+#+END_SRC
+
+在異步模型中流程更像這樣的：
+1. 定義一個方法，它完成某些任務，然後從異步調用中返回一個值，這個方法是觀察者的一部分
+2. 將這個異步調用本身定義為一個Observable
+3. 觀察者通過訂閱(Subscribe)操作關聯到那個Observable
+4. 繼續你的業務邏輯，等方法返回時，Observable會發射結果，觀察者的方法會開始處理結果或結果集
+
+用代碼描述就是：
+#+NAME: 
+#+BEGIN_SRC
+val ob = (0..10).toObservable().map { it + 1 }
+
+ob.subscribe { it -> println(it) }
+#+END_SRC
+
+**** 回調方法 (onNext, onCompleted, onError)
+Subscribe方法用於將觀察者連接到Observable，你的觀察者需要實現以下方法的一個子集：
+
+***** onNext(T item)
+Observable調用這個方法發射數據，方法的參數就是Observable發射的數據，這個方法可能會被調用多次，取決於你的實現。
+
+***** onError(Exception ex)
+當Observable遇到錯誤或者無法返回期望的數據時會調用這個方法，這個調用會終止Observable，
+後續不會再調用onNext和onCompleted，onError方法的參數是拋出的異常。
+
+***** onComplete
+正常終止，如果沒有遇到錯誤，Observable在最後一次調用onNext之後調用此方法。
+
+根據Observable協議的定義，onNext可能會被調用零次或者很​​多次，最後會有一次onCompleted或onError調用（不會同時），
+傳遞數據給onNext通常被稱作發射，onCompleted和onError被稱作通知。
+
+下面是一個更完整的例子：
+#+NAME: 
+#+BEGIN_SRC
+val myOnNext = { it -> /* do something useful with it */ };
+val myError = { throwable -> /* react sensibly to a failed call */ };
+val myComplete = { /* clean up after the final response */ };
+val myObservable = someMethod(itsParameters);
+
+myObservable.subscribe(myOnNext, myError, myComplete);
+// go on about my business
+#+END_SRC
+
+**** 取消訂閱 (Unsubscribing)
+在一些ReactiveX實現中，有一個特殊的觀察者接口Subscriber，它有一個unsubscribe方法。
+調用這個方法表示你不關心當前訂閱的Observable了，因此Observable可以選擇停止發射新的數據項（如果沒有其它觀察者訂閱）。
+
+取消訂閱的結果會傳遞給這個Observable的操作符鏈，而且會導致這個鏈條上的每個環節都停止發射數據項。這些並不保證會立即發生，
+然而，對一個Observable來說，即使沒有觀察者了，它也可以在一個while循環中繼續生成並嘗試發射數據項。
+
+**** 關於命名約定
+ReactiveX的每種特定語言的實現都有自己的命名偏好，雖然不同的實現之間有很多共同點，但並不存在一個統一的命名標準。
+而且，在某些場景中，一些名字有不同的隱含意義，或者在某些語言看來比較怪異。
+
+例如，有一個onEvent命名模式(onNext, onCompleted, onError)，在一些場景中，這些名字可能意味著事件處理器已經註冊。
+然而在ReactiveX裡，他們是事件處理器的名字。
+
+*** Observables的"熱"和"冷"
+Observable什麼時候開始發射數據序列？這取決於Observable的實現，
+
+一個"熱"的Observable可能一創建完就開始發射數據，
+因此所有後續訂閱它的觀察者可能從序列中間的某個位置開始接受數據（有一些數據錯過了）。
+
+一個"冷"的Observable會一直等待，
+直到有觀察者訂閱它才開始發射數據，因此這個觀察者可以確保會收到整個數據序列。
+
+在一些ReactiveX實現裡，還存在一種被稱作Connectable的Observable，不管有沒有觀察者訂閱它，這種Observable都不會開始發射數據，
+除非Connect方法被調用。
+
+*** 用操作符組合 Observable
+對於ReactiveX來說，Observable和Observer僅僅是個開始，它們本身不過是標準觀察者模式的一些輕量級擴展，目的是為了更好的處理事件序列。
+
+ReactiveX真正強大的地方在於它的操作符，操作符讓你可以變換、組合、操縱和處理Observable發射的數據。
+
+Rx的操作符讓你可以用聲明式的風格組合異步操作序列，它擁有回調的所有效率優勢，同時又避免了典型的異步系統中嵌套回調的缺點。
+
+下面是常用的操作符列表：
+ 1. 創建操作 Create, Defer, Empty/Never/Throw, From, Interval, Just, Range, Repeat, Start, Timer
+ 2. 變換操作 Buffer, FlatMap, GroupBy, Map, Scan, Window
+ 3. 過濾操作 Debounce, Distinct, ElementAt, Filter, First, IgnoreElements, Last, Sample, Skip, SkipLast, Take, TakeLast
+ 4. 組合操作 And/Then/When, CombineLatest, Join, Merge, StartWith, Switch, Zip
+ 5. 錯誤處理 Catch, Retry
+ 6. 輔助操作 Delay, Do, Materialize/Dematerialize, ObserveOn, Serialize, Subscribe, SubscribeOn, TimeInterval, Timeout, Timestamp, Using
+ 7. 條件和布林操作 All, Amb, Contains, DefaultIfEmpty, SequenceEqual, SkipUntil, SkipWhile, TakeUntil, TakeWhile
+ 8. 算術和集合操作 Average, Concat, Count, Max, Min, Reduce, Sum
+ 9. 轉換操作 To
+10. 連接操作 Connect, Publish, RefCount, Replay
+11. 反壓操作, 用於增加特殊的流程控制策略的操作符
+
+這些操作符並不全都是ReactiveX的核心組成部分，有一些是語言特定的實現或可選的模塊。
+
+*** RxJava
+在RxJava中，一個實現了Observer接口的對象可以訂閱(subscribe)一個Observable 類的實例。
+訂閱者(subscriber)對Observable發射(emit)的任何數據或數據序列作出響應。這種模式簡化了並發操作，
+因為它不需要阻塞等待Observable發射數據，而是創建了一個處於待命狀態的觀察者哨兵，哨兵在未來某個時刻響應Observable的通知。
