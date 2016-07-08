@@ -115,15 +115,15 @@ Observable類型給GOF的觀察者模式添加了兩種缺少的語義，這樣�
 
 有了這兩種功能，Rx就能使Observable與Iterable保持一致了，唯一的不同是數據流的方向。任何對Iterable的操作，你都可以對Observable使用。
 
-**** 名词定义
+**** 名詞定義
 這裡給出一些名詞的翻譯
 
-***** Reactive 直譯為反應性的，有活性的，根據上下文一般翻譯為反應式、響應式
-***** Iterable 可迭代對象，支持以迭代器的形式遍歷，許多語言中都存在這個概念
-***** Observable 可觀察對象，在Rx中定義為更強大的Iterable，在觀察者模式中是被觀察的對象，一旦數據產生或發生變化，會通過某種方式通知觀察者或訂閱者
-***** Observer 觀察者對象，監聽Observable發射的數據並做出響應，Subscriber是它的一個特殊實現
-***** emit 直譯為發射，發布，發出，含義是Observable在數據產生或變化時發送通知給Observer，調用Observer對應的方法，文章裡一律譯為發射
-***** items 直譯為項目，條目，在Rx裡是指Observable發射的數據項，文章裡一律譯為數據，數據項
+Reactive 直譯為反應性的，有活性的，根據上下文一般翻譯為反應式、響應式
+Iterable 可迭代對象，支持以迭代器的形式遍歷，許多語言中都存在這個概念
+Observable 可觀察對象，在Rx中定義為更強大的Iterable，在觀察者模式中是被觀察的對象，一旦數據產生或發生變化，會通過某種方式通知觀察者或訂閱者
+Observer 觀察者對象，監聽Observable發射的數據並做出響應，Subscriber是它的一個特殊實現
+emit 直譯為發射，發布，發出，含義是Observable在數據產生或變化時發送通知給Observer，調用Observer對應的方法，文章裡一律譯為發射
+items 直譯為項目，條目，在Rx裡是指Observable發射的數據項，文章裡一律譯為數據，數據項
 
 ** Observable
 *** 概述
