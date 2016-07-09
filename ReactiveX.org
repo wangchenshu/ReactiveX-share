@@ -133,7 +133,7 @@ items 直譯為項目，條目，在Rx裡是指Observable發射的數據項，�
 這篇文章會解釋什麼是響應式編程模式(reactive pattern)，以及什麼是可觀察對象(Observables)和觀察者(observers)，
 其它幾篇文章會展示如何用操作符組合和改變Observable的行為。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/legend.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/legend.png]]
 
 *** 背景知識
 在很多軟件編程任務中，或多或少你都會期望你寫的代碼能按照編寫的順序，一次一個的順序執行和完成。但是在ReactiveX中，很多指令可能是並行執行的，
@@ -312,11 +312,11 @@ Subject可以看成是一個橋樑或者代理，在某些ReactiveX實現中（�
 一個AsyncSubject只在原始Observable完成後，發射來自原始Observable的最後一個值。
 （如果原始Observable沒有發射任何值，AsyncObject也不發射任何值）它會把這最後一個值發射給任何後續的觀察者。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.AsyncSubject.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.AsyncSubject.png]]
 
 然而，如果原始的Observable因為發生了錯誤而終止，AsyncSubject將不會發射任何數據，只是簡單的向前傳遞這個錯誤通知。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.AsyncSubject.e.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.AsyncSubject.e.png]]
 
 **** BehaviorSubject
 當觀察者訂閱BehaviorSubject時，它開始發射原始Observable最近發射的數據
@@ -325,7 +325,7 @@ https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.BehaviorSubject.png
 
 然而，如果原始的Observable因為發生了一個錯誤而終止，BehaviorSubject將不會發射任何數據，只是簡單的向前傳遞這個錯誤通知。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.BehaviorSubject.e.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.BehaviorSubject.e.png]]
 
 **** PublishSubject
 PublishSubject只會把在訂閱發生的時間點之後來自原始Observable的數據發射給觀察者。
@@ -335,11 +335,11 @@ PublishSubject只會把在訂閱發生的時間點之後來自原始Observable�
 或者使用Create創建那個Observable以便手動給它引入"冷"Observable的行為
 （當所有觀察者都已經訂閱時才開始發射數據），或者改用ReplaySubject。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.PublishSubject.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.PublishSubject.png]]
 
 如果原始的Observable因為發生了一個錯誤而終止，PublishSubject將不會發射任何數據，只是簡單的向前傳遞這個錯誤通知。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.PublishSubject.e.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.PublishSubject.e.png]]
 
 **** ReplaySubject
 ReplaySubject會發射所有來自原始Observable的數據給觀察者，無論它們是何時訂閱的。也有其它版本的ReplaySubject，
@@ -348,7 +348,7 @@ ReplaySubject會發射所有來自原始Observable的數據給觀察者，無論
 如果你把ReplaySubject當作一個觀察者使用，注意不要從多個線程中調用它的onNext方法（包括其它的on系列方法），
 這可能導致同時（非順序）調用，這會違反Observable協議，給Subject的結果增加了不確定性。
 
-https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.ReplaySubject.png
+:[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/S.ReplaySubject.png]]
 
 *** RxJava的對應類
 假設你有一個Subject，你想把它傳遞給其它的代理或者暴露它的Subscriber接口，你可以調用它的asObservable方法，
