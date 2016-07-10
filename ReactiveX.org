@@ -1,6 +1,8 @@
 * ReactiveX
 
 ** ReactiveX
+翻譯自 https://mcxiaoke.gitbooks.io/rxdocs/content/
+
 *** Rx 介紹
 
 **** ReactiveX 的歷史
@@ -518,3 +520,490 @@ TestScheduler讓你可以對調度器的時鐘錶現進行手動微調。這對�
 1. advanceTimeTo(time,unit) 向前波動調度器的時鐘到一個指定的時間點
 2. advanceTimeBy(time,unit) 將調度器的時鐘向前撥動一個指定的時間段
 3. triggerActions() 開始執行任何計劃中的但是未啟動的任務，如果它們的計劃時間等於或者早於調度器時鐘的當前時間
+
+** Operators
+
+*** 操作符分類
+ReactiveX的每種編程語言的實現都實現了一組操作符的集合。不同的實現之間有很多重疊的部分，也有一些操作符只存在特定的實現中。
+每種實現都傾向於用那種編程語言中他們熟悉的上下文中相似的方法給這些操作符命名。
+
+本文首先會給出ReactiveX的核心操作符列表和對應的文檔鏈接，後面還有一個決策樹用於幫助你根據具體的場景選擇合適的操作符。
+最後有一個語言特定實現的按字母排序的操作符列表。
+
+如果你想實現你自己的操作符，可以參考這裡：[[https://mcxiaoke.gitbooks.io/rxdocs/content/topics/Implementing-Your-Own-Operators.html][實現自定義操作符]]
+
+**** 創建操作
+用於創建Observable的操作符
+
+***** create
+通過調用觀察者的方法從頭創建一個Observable
+
+***** Defer
+在觀察者訂閱之前不創建這個Observable，為每一個觀察者創建一個新的Observable
+
+***** Empty/Never/Throw
+創建行為受限的特殊Observable
+
+***** From
+將其它的對像或數據結構轉換為Observable
+
+***** Interval
+創建一個定時發射整數序列的Observable
+
+***** Just
+將對像或者對象集合轉換為一個會發射這些對象的Observable
+
+***** Range
+創建發射指定範圍的整數序列的Observable
+
+***** Repeat
+創建重複發射特定的數據或數據序列的Observable
+
+***** Start
+創建發射一個函數的返回值的Observable
+
+***** Timer
+創建在一個指定的延遲之後發射單個數據的Observable
+
+**** 變換操作
+這些操作符可用於對Observable發射的數據進行變換，詳細解釋可以看每個操作符的文檔
+
+***** Buffer
+緩存，可以簡單的理解為緩存，它定期從Observable收集數據到一個集合，然後把這些數據集合打包發射，而不是一次發射一個
+
+***** FlatMap
+扁平映射，將Observable發射的數據變換為Observables集合，然後將這些Observable發射的數據平坦化的放進一個單獨的Observable，
+可以認為是一個將嵌套的數據結構展開的過程。
+
+***** GroupBy
+分組，將原來的Observable分拆為Observable集合，將原始Observable發射的數據按Key分組，每一個Observable發射一組不同的數據
+
+***** Map
+映射，通過對序列的每一項都應用一個函數變換Observable發射的數據，實質是對序列中的每一項執行一個函數，函數的參數就是這個數據項
+
+***** Scan
+掃描，對Observable發射的每一項數據應用一個函數，然後按順序依次發射這些值
+
+***** Window
+窗口，定期將來自Observable的數據分拆成一些Observable窗口，然後發射這些窗口，而不是每次發射一項。類似於Buffer，
+但Buffer發射的是數據，Window發射的是Observable，每一個Observable發射原始Observable的數據的一個子集
+
+**** 過濾操作
+這些操作符用於從Observable發射的數據中進行選擇
+
+***** Debounce
+只有在空閒了一段時間後才發射數據，通俗的說，就是如果一段時間沒有操作，就執行一次操作
+
+***** Distinct
+去重，過濾掉重複數據項
+
+***** ElementAt
+取值，取特定位置的數據項
+
+***** Filter
+過濾，過濾掉沒有通過謂詞測試的數據項，只發射通過測試的
+
+***** First
+首項，只發射滿足條件的第一條數據
+
+***** IgnoreElements
+忽略所有的數據，只保留終止通知(onError或onCompleted)
+
+***** List
+末項，只發射最後一條數據
+
+***** Sample
+取樣，定期發射最新的數據，等於是數據抽樣，有的實現裡叫ThrottleFirst
+
+***** Skip
+跳過前面的若干項數據
+
+***** SkipLast
+跳過後面的若干項數據
+
+***** Take
+只保留前面的若干項數據
+
+***** TakeLast
+只保留後面的若干項數據
+
+**** 組合操作
+組合操作符用於將多個Observable組合成一個單一的Observable
+
+***** And/Then/When
+通過模式(And條件)和計劃(Then次序)組合兩個或多個Observable發射的數據集
+
+***** CombineLatest
+當兩個Observables中的任何一個發射了一個數據時，通過一個指定的函數組合每個Observable發射的最新數據（一共兩個數據），
+然後發射這個函數的結果
+
+***** Join
+無論何時，如果一個Observable發射了一個數據項，只要在另一個Observable發射的數據項定義的時間窗口內，
+就將兩個Observable發射的數據合併發射
+
+***** Merge
+將兩個Observable發射的數據組合併成一個
+
+***** StartWith
+在發射原來的Observable的數據序列之前，先發射一個指定的數據序列或數據項
+
+***** Switch
+將一個發射Observable序列的Observable轉換為這樣一個Observable：
+它逐個發射那些Observable最近發射的數據
+
+***** Zip
+打包，使用一個指定的函數將多個Observable發射的數據組合在一起，然後將這個函數的結果作為單項數據發射
+
+**** 錯誤處理
+這些操作符用於從錯誤通知中恢復
+
+***** Catch
+捕獲，繼續序列操作，將錯誤替換為正常的數據，從onError通知中恢復
+
+***** Retry
+重試，如果Observable發射了一​​個錯誤通知，重新訂閱它，期待它正常終止
+
+**** 輔助操作
+一組用於處理Observable的操作符
+
+***** Delay
+延遲一段時間發射結果數據
+
+***** Do
+註冊一個動作佔用一些Observable的生命週期事件，相當於Mock某個操作
+
+***** Materialize/Dematerialize
+將發射的數據和通知都當做數據發射，或者反過來
+
+***** ObserveOn
+指定觀察者觀察Observable的調度程序（工作線程）
+
+***** Serialize
+強制Observable按次序發射數據並且功能是有效的
+
+***** Subscribe
+收到Observable發射的數據和通知後執行的操作
+
+***** SubscribeOn
+指定Observable應該在哪個調度程序上執行
+
+***** TimeInterval
+將一個Observable轉換為發射兩個數據之間所耗費時間的Observable
+
+***** Timeout
+添加超時機制，如果過了指定的一段時間沒有發射數據，就發射一個錯誤通知
+
+***** Timestamp
+給Observable發射的每個數據項添加一個時間戳
+
+***** Using
+創建一個只在Observable的生命週期內存在的一次性資源
+
+**** 條件和布林操作
+這些操作符可用於單個或多個數據項，也可用於Observable
+
+***** All
+判斷Observable發射的所有的數據項是否都滿足某個條件
+
+***** Amb
+給定多個Observable，只讓第一個發射數據的Observable發射全部數據
+
+***** Contains
+判斷Observable是否會發射一個指定的數據項
+
+***** DefaultIfEmpty
+發射來自原始Observable的數據，如果原始Observable沒有發射數據，就發射一個默認數據
+
+***** SequenceEqual
+判斷兩個Observable是否按相同的數據序列
+
+***** SkipUntil
+丟棄原始Observable發射的數據，直到第二個Observable發射了一個數據，然後發射原始Observable的剩餘數據
+
+***** SkipWhile
+丟棄原始Observable發射的數據，直到一個特定的條件為假，然後發射原始Observable剩餘的數據
+
+***** TakeUntil
+發射來自原始Observable的數據，直到第二個Observable發射了一個數據或一個通知
+
+***** TakeWhile
+發射原始Observable的數據，直到一個特定的條件為真，然後跳過剩餘的數據
+
+**** 算術和聚合操作
+這些操作符可用於整個數據序列
+
+***** Average
+計算Observable發射的數據序列的平均值，然後發射這個結果
+
+***** Concat
+不交錯的連接多個Observable的數據
+
+***** Count
+計算Observable發射的數據個數，然後發射這個結果
+
+***** Max
+計算並發射數據序列的最大值
+
+***** Min
+計算並發射數據序列的最小值
+
+***** Reduce
+按順序對數據序列的每一個應用某個函數，然後返回這個值
+
+***** Sum
+計算並發射數據序列的和
+
+**** 異步操作
+下面的這些操作符屬於單獨的rxjava-async模塊，它們用於將同步對象轉換為Observable。
+
+***** start()
+創建一個Observable，它發射一個函數的返回值
+
+***** toAsync() or asyncAction() or asyncFunc()
+將一個函數或者Action轉換為已Observable，它執行這個函數並發射函數的返回值
+
+***** startFuture()
+將一個返回Future的函數轉換為一個Observable，它發射Future的返回值
+
+***** deferFuture()
+將一個返回Observable的Future轉換為一個Observable，但是並不嘗試獲取這個Future返回的Observable，
+直到有訂閱者訂閱它
+
+***** forEachFuture()
+傳遞Subscriber方法給一個Subscriber，但是同時表現得像一個Future一樣阻塞直到它完成
+
+***** fromAction()
+將一個Action轉換為Observable，當一個訂閱者訂閱時，它執行這個action並發射它的返回值
+
+***** fromCallable()
+將一個Callable轉換為Observable，當一個訂閱者訂閱時，它執行這個Callable並發射Callable的返回值，或者發射異常
+
+***** fromRunnable()
+將一個Runnable轉換為Observable，當一個訂閱者訂閱時，它執行這個Runnable並發射Runnable的返回值
+
+***** runAsync()
+返回一個StoppableObservable，它發射某個Scheduler上指定的Action生成的多個actions
+
+**** 連接操作
+一些有精確可控的訂閱行為的特殊Observable
+
+***** Connect
+指示一個可連接的Observable開始發射數據給訂閱者
+
+***** Publish
+將一個普通的Observable轉換為可連接的
+
+***** RefCount
+使一個可連接的Observable表現得像一個普通的Observable
+
+***** Replay
+確保所有的觀察者收到同樣的數據序列，即使他們在Observable開始發射數據之後才訂閱
+
+**** 轉換操作
+
+***** To
+將Observable轉換為其它的對像或數據結構
+
+***** Blocking
+阻塞Observable的操作符
+
+**** 阻塞操作
+這一節解釋 BlockingObservable 的子類. 一個阻塞的Observable 繼承普通的Observable類，
+增加了一些可用於阻塞Observable發射的數據的操作符。
+
+要將普通的Observable 轉換為 BlockingObservable，可以使用 Observable.toBlocking()) 方法
+或者BlockingObservable.from()) 方法。
+
+***** forEach()
+對Observable發射的每一項數據調用一個方法，會阻塞直到Observable完成
+
+***** first()
+阻塞直到Observable發射了一個數據，然後返回第一項數據
+
+***** firstOrDefault()
+阻塞直到Observable發射了一個數據或者終止，返回第一項數據，或者返回默認值
+
+***** last()
+阻塞直到Observable終止，然後返回最後一項數據
+
+***** lastOrDefault()
+阻塞直到Observable終止，然後返回最後一項的數據，或者返回默認值
+
+***** mostRecent()
+返回一個總是返回Observable最近發射的數據的iterable
+
+***** next()
+返回一個Iterable，會阻塞直到Observable發射了另一個值，然後返回那個值
+
+***** latest()
+返回一個iterable，會阻塞直到或者除非Observable發射了一個iterable沒有返回的值，然後返回這個值
+
+***** single()
+如果Observable終止時只發射了一個值，返回那個值，否則拋出異常
+
+***** singleOrDefault()
+如果Observable終止時只發射了一個值，返回那個值，否則否好默認值
+
+***** toFuture()
+將Observable轉換為一個Future
+
+***** toIterable()
+將一個發射數據序列的Observable轉換為一個Iterable
+
+***** getIterator()
+將一個發射數據序列的Observable轉換為一個Iterator
+
+***** 伴隨這個解釋還有一個修改版的彈珠圖，表示阻塞Observable的彈珠圖：
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.legend.png]]
+
+***** BlockingObservable的方法
+BlockingObservable的方法不是將一個Observable變換為另一個，也不是過濾Observables，它們會打斷Observable的調用鏈，
+會阻塞等待直到Observable發射了想要的數據，然後返回這個數據（而不是一個Observable）。
+
+要將一個Observable轉換為一個BlockingObservable，你可以使用Observable.toBlocking或BlockingObservable.from方法。
+
+Javadoc: Observable.toBlocking())
+Javadoc: BlockingObservable.from(Observable))
+
+****** first
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.first.png]]
+
+要獲取BlockingObservable的發射物，使用無參數的first方法。
+
+Javadoc: BlockingObservable.first())
+
+****** first.p
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.first.p.png]]
+
+你也可以給first方法傳遞一個謂詞函數用於獲取滿足條件的BlockingObservable。
+
+Javadoc: BlockingObservable.first(Func1))
+
+****** firstOrDefault
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.firstOrDefault.png]]
+
+和過濾操作符一樣，如果原始Observable沒有數據，first會拋出異常NoSuchElementException，firstOrDefault會返回一個默認值。
+
+Javadoc: BlockingObservable.firstOrDefault())
+
+****** firstOrDefault.p
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.firstOrDefault.p.png]]
+
+
+firstOrDefault同樣也接受一個謂詞函數作為參數，用於獲取滿足條件的第一項，如果沒有滿足條件的就返回默認值。
+
+Javadoc: BlockingObservable.firstOrDefault(T, Func1))
+
+****** single
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.single.png]]
+
+single和first類似，但是如果不是正好發射一個數據，會拋出異常NoSuchElementException。其它幾個變體的功能也是類似的。
+
+Javadoc: single())
+
+****** single.p
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.single.p.png]]
+
+同上，接受一個謂詞函數，如果滿足條件的不是正好一個，會拋出異常。
+
+Javadoc: single(Func1))
+
+****** singleOrDefault
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.singleOrDefault.png]]
+
+類似firstOrDefault，在為空時返回默認值，超過一個就拋出異常。
+
+Javadoc: singleOrDefault(T))
+
+****** singleOrDefault.p
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.singleOrDefault.p.png]]
+
+
+類似firstOrDefault，接受一個謂詞函數，如果沒有復合條件的，返回默認值；如果有多個複合條件的，以錯誤通知終止。
+
+Javadoc: singleOrDefault(Func1,T))
+
+****** next
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.next.png]]
+
+next操作符會阻塞直到BlockingObservable返回另外一個值，然後它返回那個值。你可以重複調用這個方法從BlockingObservable獲取後續的數據項。
+以阻塞的方式高效的迭代獲取它的發射物。
+
+latest操作符也是類似的，但是它不會阻塞等待下一個值，它立即返回最近發射的數據項，只在Observable還沒有發射任何數據時會阻塞。
+
+Javadoc: next())
+Javadoc: latest())
+
+****** mostRecent
+[[https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/B.mostRecent.png]]
+
+mostRecent操作符讓你可以用類似的方式迭代一個BlockingObservable，但是它總是立即返回一個值，或者是默認值（如果BlockingObservable還沒有發射任何數據），
+或者是BlockingObservable最近發射的數據項。
+
+Javadoc: mostRecent(T))
+
+****** forEach
+BlockingObservable類中也有一個類似的叫作forEach的方法。要使用這個方法，你首先需要使用BlockingObservable.from方法或
+Observable.toBlocking操作符將原始Observable轉換為一個BlockingObservable。
+
+BlockingObservable.forEach接受單個函數作為參數，這個函數的作用類似於普通Observable訂閱中的onNext函數。
+forEach自身會阻塞知道BlockingObservable完成，當它不阻塞時就是完成了，不是通過調用一個回調方法表示它完成了。
+如果遇到了錯誤它將拋出一個RuntimeException（而不是調用一個類似於onError的回調方法）。
+
+Javadoc: BlockingObservable.forEach(Action1))
+
+****** 參見：
+javadoc ： BlockingObservable
+Javadoc ： toBlocking()
+Javadoc ： BlockingObservable.from()
+
+***** 附錄：相似的阻塞和非阻塞操作符列表
+
+| 操作符                             | 發射多個數據的Observable | 發射單個數據的Observable | 不發射數據的Observable | Rx.NET等價操作       |
+|------------------------------------+--------------------------+--------------------------+------------------------+----------------------|
+| Observable.first                   | 第一項                   | 單個數據                 | 該元素不存在           | firstAsync           |
+| BlockingObservable.first           | 第一項                   | 單個數據                 | 該元素不存在           | first                |
+| Observable.firstOrDefault          | 第一項                   | 單個數據                 | 默認數據               | firstOrDefaultAsync  |
+| BlockingObservable.firstOrDefault  | 第一項                   | 單個數據                 | 默認數據               | firstOrDefault       |
+| Observable.last                    | 最後一項                 | 單個數據                 | 該元素不存在           | lastAsync            |
+| BlockingObservable.last            | 最後一項                 | 單個數據                 | 該元素不存在           | last                 |
+| Observable.lastOrDefault           | 最後一項                 | 單個數據                 | 默認數據               | lastOrDefaultAsync   |
+| BlockingObservable.lastOrDefault   | 最後一項                 | 單個數據                 | 默認數據               | lastOrDefault        |
+| Observable.single                  | 非法參數                 | 單個數據                 | 該元素不存在           | singleAsync          |
+| BlockingObservable.single          | 非法參數                 | 單個數據                 | 該元素不存在           | single               |
+| Observable.singleOrDefault         | 非法參數                 | 單個數據                 | 默認數據               | singleOrDefaultAsync |
+| BlockingObservable.singleOrDefault | 非法參數                 | 單個數據                 | 默認數據               | singleOrDefault      |
+
+**** 字符串操作
+StringObservable 類包含一些用於處理字符串序列和流的特殊操作符，如下：
+
+***** byLine()
+將一個字符串的Observable轉換為一個行序列的Observable，這個Observable將原來的序列當做流處理，然後按換行符分割
+
+***** decode()
+將一個多字節的字符流轉換為一個Observable，它按字符邊界發射字節數組
+
+***** encode()
+對一個發射字符串的Observable執行變換操作，變換後的Observable發射一個在原始字符串中表示多字節字符邊界的字節數組
+
+***** from()
+將一個字符流或者Reader轉換為一個發射字節數組或者字符串的Observable
+
+***** join()
+將一個發射字符串序列的Observable轉換為一個發射單個字符串的Observable，後者用一個指定的字符串連接所有的字符串
+
+***** split()
+將一個發射字符串的Observable轉換為另一個發射字符串的Observable，後者使用一個指定的正則表達式邊界分割前者發射的所有字符串
+
+***** stringConcat()
+將一個發射字符串序列的Observable轉換為一個發射單個字符串的Observable，後者連接前者發射的所有字符串
+
+**** 操作符決策樹
+幾種主要的需求
+
+1. 直接創建一個Observable（創建操作）
+2. 組合多個Observable（組合操作）
+3. 對Observable發射的數據執行變換操作（變換操作）
+4. 從Observable發射的數據中取特定的值（過濾操作）
+5. 轉發Observable的部分值（條件/布林/過濾操作）
+6. 對Observable發射的數據序列求值（算術/聚合操作）
