@@ -537,6 +537,42 @@ ReactiveX的每種編程語言的實現都實現了一組操作符的集合。�
 
 ***** create
 通過調用觀察者的方法從頭創建一個Observable
+#+NAME: create
+#+BEGIN_SRC
+// Java
+Observable.create(new Observable.OnSubscribe<Integer>() {
+    @Override
+    public void call(final Subscriber<? super Integer> subscriber) {
+        IntStream.range(1, 6).forEach(it -> subscriber.onNext(it));
+        subscriber.onCompleted();
+    }
+})
+.map(i -> String.valueOf(i+2))
+.subscribe(new Subscriber<String>() {
+    @Override
+    public void onCompleted() {
+        System.out.println("Sequence complete.");
+    }
+
+    @Override
+    public void onError(Throwable error) {
+        System.out.println("Error encountered: " + error.getMessage());
+    }
+
+    @Override
+    public void onNext(String item) {
+        System.out.println("(create) Next: " + item);
+    }
+});
+
+// Kotlin
+Observable.create(object : Observable.OnSubscribe<Int> {
+    override fun call(subscriber: Subscriber<in Int>) {
+        (1..5).map { it-> it*2 }.forEach { i -> subscriber.onNext(i) }
+        subscriber.onCompleted()
+    }
+}).subscribe { it -> println("(create) Next: " + it) }
+#+END_SRC
 
 ***** Defer
 在觀察者訂閱之前不創建這個Observable，為每一個觀察者創建一個新的Observable
@@ -547,12 +583,66 @@ ReactiveX的每種編程語言的實現都實現了一組操作符的集合。�
 ***** From
 將其它的對像或數據結構轉換為Observable
 
+#+NAME: from
+#+BEGIN_SRC
+// Java
+Integer[] items = {1, 2, 3, 4, 5};
+Observable myObservable = Observable.from(items);
+myObservable
+.map(i -> String.valueOf((int)i*2))
+.subscribe(
+    item -> System.out.println("(from) Next:" + item),
+    error -> System.out.println("Error encountered: " + error),
+    () -> System.out.println("Sequence complete.")
+);
+
+// Kotlin
+Observable.from(listOf(1, 2, 3, 4, 5).map { it -> it+2 })
+    .subscribe { it -> println("(from) Next: " + it) }
+#+END_SRC
+
 ***** Interval
 創建一個定時發射整數序列的Observable
 
 ***** Just
 將對像或者對象集合轉換為一個會發射這些對象的Observable
 
+#+NAME: just
+#+BEGIN_SRC
+// Java
+Observable.just(1, 2, 3, 4, 5)
+.map(i -> String.valueOf(i+1))
+.subscribe(new Subscriber<String>() {
+    @Override
+    public void onCompleted() {
+        System.out.println("Sequence complete.");
+    }
+
+    @Override
+    public void onError(Throwable error) {
+        System.err.println("Error: " + error.getMessage());
+    }
+
+    @Override
+    public void onNext(String item) {
+        System.out.println("(just) Next: " + item);
+    }
+});
+
+// Kotlin
+Observable.just(1, 2, 3, 4, 5).map { it -> it+1 }
+.subscribe(object: Subscriber<Int>() {
+    override fun onCompleted() {
+        println("Sequence complete.")
+    }
+    override fun onError(e: Throwable?) {
+        println("Error encountered: " + e)
+    }
+    override fun onNext(it: Int?) {
+        println("(just) Next: " + it)
+    }
+})
+#+END_SRC
 ***** Range
 創建發射指定範圍的整數序列的Observable
 
