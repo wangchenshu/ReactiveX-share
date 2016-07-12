@@ -598,7 +598,7 @@ myObservable
 
 // Kotlin
 Observable.from(listOf(1, 2, 3, 4, 5).map { it -> it+2 })
-    .subscribe { it -> println("(from) Next: " + it) }
+.subscribe { it -> println("(from) Next: " + it) }
 #+END_SRC
 
 ***** Interval
@@ -646,8 +646,22 @@ Observable.just(1, 2, 3, 4, 5).map { it -> it+1 }
 ***** Range
 創建發射指定範圍的整數序列的Observable
 
+#+NAME: range
+#+BEGIN_SRC
+Observable.range(1, 5).subscribe(
+    it -> System.out.println("Range: " + it)
+);
+#+END_SRC
+
 ***** Repeat
 創建重複發射特定的數據或數據序列的Observable
+
+#+NAME: repeat
+#+BEGIN_SRC
+Observable.range(6, 10).repeat(2).subscribe(
+    it -> println("Repeat: " + it)
+);
+#+END_SRC
 
 ***** Start
 創建發射一個函數的返回值的Observable
@@ -661,22 +675,98 @@ Observable.just(1, 2, 3, 4, 5).map { it -> it+1 }
 ***** Buffer
 緩存，可以簡單的理解為緩存，它定期從Observable收集數據到一個集合，然後把這些數據集合打包發射，而不是一次發射一個
 
+#+NAME: buffer
+#+BEGIN_SRC
+// Buffer-1
+Observable.range(1, 20).buffer(5)
+.flatMap(it -> Observable.from(it))
+.subscribe(it -> println("Buffer-1: " + it));
+
+// Buffer-2
+Observable.range(1, 100).buffer(20)
+.subscribe(it -> println("Buffer-2: " + it));
+#+END_SRC
+
 ***** FlatMap
 扁平映射，將Observable發射的數據變換為Observables集合，然後將這些Observable發射的數據平坦化的放進一個單獨的Observable，
 可以認為是一個將嵌套的數據結構展開的過程。
 
+#+NAME: FlatMap
+#+BEGIN_SRC
+// FlatMap-1
+Observable.from(Stream.of(1, 2, 3, 4, 5).collect(Collectors.toList()))
+.flatMap(it -> Observable.just(it+4))
+.subscribe(it -> System.out.println("flatMap-1: " + it));
+
+// FlatMap-2
+Observable.from(Arrays.asList(1, 2, 3, 4, 5))
+.flatMap(new Func1<Integer, Observable<Integer>>() {
+    @Override
+    public Observable<Integer> call(Integer it) {
+        return Observable.just(it+4);
+    }
+}).subscribe(new Action1<Integer>() {
+    @Override
+    public void call(Integer it) {
+        System.out.println("flatMap-2: " + it);
+    }
+});
+#+END_SRC
+
 ***** GroupBy
 分組，將原來的Observable分拆為Observable集合，將原始Observable發射的數據按Key分組，每一個Observable發射一組不同的數據
 
+#+NAME: GroupBy
+#+BEGIN_SRC
+Observable.range(1, 10).groupBy(it -> it%2 ==0)
+.flatMap(it->it.toList())
+.subscribe(it -> println("GroupBy: " + it));
+#+END_SRC
 ***** Map
 映射，通過對序列的每一項都應用一個函數變換Observable發射的數據，實質是對序列中的每一項執行一個函數，函數的參數就是這個數據項
+
+#+NAME: Map
+#+BEGIN_SRC
+// Map-1
+Observable.just(1, 2, 3, 4, 5)
+.map(it -> it+3)
+.subscribe(it -> System.out.println("map-1: " + it));
+
+// Map-2
+Observable.just(1, 2, 3, 4, 5)
+.map(new Func1<Integer, Integer>() {
+    @Override
+    public Integer call(Integer it) {
+        return it+3;
+    }
+})
+.subscribe(new Action1<Integer>() {
+    @Override
+    public void call(Integer it) {
+        System.out.println("map-2: " + it);
+    }
+});
+#+END_SRC
 
 ***** Scan
 掃描，對Observable發射的每一項數據應用一個函數，然後按順序依次發射這些值
 
+#+NAME: Scan
+#+BEGIN_SRC
+Observable.range(1, 10).scan((sum, it) -> sum += it)
+.subscribe(it -> println("Scan: " + it));
+#+END_SRC
+
 ***** Window
 窗口，定期將來自Observable的數據分拆成一些Observable窗口，然後發射這些窗口，而不是每次發射一項。類似於Buffer，
 但Buffer發射的是數據，Window發射的是Observable，每一個Observable發射原始Observable的數據的一個子集
+
+#+NAME: Window
+#+BEGIN_SRC
+Observable.range(1, 100).window(20)
+.flatMap(it -> it.toList())
+.subscribe(it -> println("Window: " + it));
+#+END_SRC
 
 **** 過濾操作
 這些操作符用於從Observable發射的數據中進行選擇
@@ -687,20 +777,51 @@ Observable.just(1, 2, 3, 4, 5).map { it -> it+1 }
 ***** Distinct
 去重，過濾掉重複數據項
 
+#+NAME: Distinct
+#+BEGIN_SRC
+Observable.just(1, 1, 1, 2, 2, 3, 4, 4, 5).distinct()
+.subscribe(it -> println("Distinct: " + it));
+#+END_SRC
+
 ***** ElementAt
 取值，取特定位置的數據項
+
+#+NAME: ElementAt
+#+BEGIN_SRC
+Observable.range(1, 10).elementAt(3)
+.subscribe(it -> println("ElementAt: " + it));
+#+END_SRC
 
 ***** Filter
 過濾，過濾掉沒有通過謂詞測試的數據項，只發射通過測試的
 
+#+NAME: Filter
+#+BEGIN_SRC
+Observable.range(1, 10).filter(it -> it%2 ==0)
+.subscribe(it -> println("Filter: " + it));
+println();
+#+END_SRC
+
 ***** First
 首項，只發射滿足條件的第一條數據
+
+#+NAME: First
+#+BEGIN_SRC
+Observable.range(1, 10).first()
+.subscribe(it -> println("First: " + it));
+#+END_SRC
 
 ***** IgnoreElements
 忽略所有的數據，只保留終止通知(onError或onCompleted)
 
-***** List
+***** Last
 末項，只發射最後一條數據
+
+#+NAME: Last
+#+BEGIN_SRC
+Observable.range(1, 10).last()
+.subscribe(it -> println("Last: " + it));
+#+END_SRC
 
 ***** Sample
 取樣，定期發射最新的數據，等於是數據抽樣，有的實現裡叫ThrottleFirst
@@ -708,14 +829,38 @@ Observable.just(1, 2, 3, 4, 5).map { it -> it+1 }
 ***** Skip
 跳過前面的若干項數據
 
+#+NAME: Skip
+#+BEGIN_SRC
+Observable.range(1, 10).skip(5)
+.subscribe(it -> println("Skip: " + it));
+#+END_SRC
+
 ***** SkipLast
 跳過後面的若干項數據
+
+#+NAME: SkipLast
+#+BEGIN_SRC
+Observable.range(1, 10).skipLast(5)
+.subscribe(it -> println("SkipLast: " + it));
+#+END_SRC
 
 ***** Take
 只保留前面的若干項數據
 
+#+NAME: Take
+#+BEGIN_SRC
+Observable.range(1, 10).take(3)
+.subscribe(it -> println("Take: " + it));
+#+END_SRC
+
 ***** TakeLast
 只保留後面的若干項數據
+
+#+NAME: TakeLast
+#+BEGIN_SRC
+Observable.range(1, 10).takeLast(3)
+.subscribe(it -> println("TakeLast: " + it));
+#+END_SRC
 
 **** 組合操作
 組合操作符用於將多個Observable組合成一個單一的Observable
