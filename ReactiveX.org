@@ -589,16 +589,16 @@ Observable.create(object : Observable.OnSubscribe<Int> {
 Integer[] items = {1, 2, 3, 4, 5};
 Observable myObservable = Observable.from(items);
 myObservable
-.map(i -> String.valueOf((int)i*2))
-.subscribe(
-    item -> System.out.println("(from) Next:" + item),
-    error -> System.out.println("Error encountered: " + error),
-    () -> System.out.println("Sequence complete.")
-);
+    .map(i -> String.valueOf((int)i*2))
+    .subscribe(
+        item -> System.out.println("(from) Next:" + item),
+        error -> System.out.println("Error encountered: " + error),
+        () -> System.out.println("Sequence complete.")
+    );
 
 // Kotlin
 Observable.from(listOf(1, 2, 3, 4, 5).map { it -> it+2 })
-.subscribe { it -> println("(from) Next: " + it) }
+    .subscribe { it -> println("(from) Next: " + it) }
 #+END_SRC
 
 ***** Interval
@@ -611,46 +611,45 @@ Observable.from(listOf(1, 2, 3, 4, 5).map { it -> it+2 })
 #+BEGIN_SRC
 // Java
 Observable.just(1, 2, 3, 4, 5)
-.map(i -> String.valueOf(i+1))
-.subscribe(new Subscriber<String>() {
-    @Override
-    public void onCompleted() {
-        System.out.println("Sequence complete.");
-    }
+    .map(i -> String.valueOf(i+1))
+    .subscribe(new Subscriber<String>() {
+        @Override
+        public void onCompleted() {
+            System.out.println("Sequence complete.");
+        }
 
-    @Override
-    public void onError(Throwable error) {
-        System.err.println("Error: " + error.getMessage());
-    }
+        @Override
+        public void onError(Throwable error) {
+            System.err.println("Error: " + error.getMessage());
+        }
 
-    @Override
-    public void onNext(String item) {
-        System.out.println("(just) Next: " + item);
-    }
-});
+        @Override
+        public void onNext(String item) {
+            System.out.println("(just) Next: " + item);
+        }
+    });
 
 // Kotlin
 Observable.just(1, 2, 3, 4, 5).map { it -> it+1 }
-.subscribe(object: Subscriber<Int>() {
-    override fun onCompleted() {
-        println("Sequence complete.")
-    }
-    override fun onError(e: Throwable?) {
-        println("Error encountered: " + e)
-    }
-    override fun onNext(it: Int?) {
-        println("(just) Next: " + it)
-    }
-})
+    .subscribe(object: Subscriber<Int>() {
+        override fun onCompleted() {
+            println("Sequence complete.")
+        }
+        override fun onError(e: Throwable?) {
+            println("Error encountered: " + e)
+        }
+        override fun onNext(it: Int?) {
+            println("(just) Next: " + it)
+        }
+    })
 #+END_SRC
 ***** Range
 創建發射指定範圍的整數序列的Observable
 
 #+NAME: range
 #+BEGIN_SRC
-Observable.range(1, 5).subscribe(
-    it -> System.out.println("Range: " + it)
-);
+Observable.range(1, 5)
+    .subscribe(it -> System.out.println("Range: " + it));
 #+END_SRC
 
 ***** Repeat
@@ -658,9 +657,8 @@ Observable.range(1, 5).subscribe(
 
 #+NAME: repeat
 #+BEGIN_SRC
-Observable.range(6, 10).repeat(2).subscribe(
-    it -> println("Repeat: " + it)
-);
+Observable.range(6, 10).repeat(2)
+    .subscribe(it -> println("Repeat: " + it));
 #+END_SRC
 
 ***** Start
@@ -679,12 +677,12 @@ Observable.range(6, 10).repeat(2).subscribe(
 #+BEGIN_SRC
 // Buffer-1
 Observable.range(1, 20).buffer(5)
-.flatMap(it -> Observable.from(it))
-.subscribe(it -> println("Buffer-1: " + it));
+    .flatMap(it -> Observable.from(it))
+    .subscribe(it -> println("Buffer-1: " + it));
 
 // Buffer-2
 Observable.range(1, 100).buffer(20)
-.subscribe(it -> println("Buffer-2: " + it));
+    .subscribe(it -> println("Buffer-2: " + it));
 #+END_SRC
 
 ***** FlatMap
@@ -695,22 +693,22 @@ Observable.range(1, 100).buffer(20)
 #+BEGIN_SRC
 // FlatMap-1
 Observable.from(Stream.of(1, 2, 3, 4, 5).collect(Collectors.toList()))
-.flatMap(it -> Observable.just(it+4))
-.subscribe(it -> System.out.println("flatMap-1: " + it));
+    .flatMap(it -> Observable.just(it+4))
+    .subscribe(it -> System.out.println("flatMap-1: " + it));
 
 // FlatMap-2
 Observable.from(Arrays.asList(1, 2, 3, 4, 5))
-.flatMap(new Func1<Integer, Observable<Integer>>() {
-    @Override
-    public Observable<Integer> call(Integer it) {
-        return Observable.just(it+4);
-    }
-}).subscribe(new Action1<Integer>() {
-    @Override
-    public void call(Integer it) {
-        System.out.println("flatMap-2: " + it);
-    }
-});
+    .flatMap(new Func1<Integer, Observable<Integer>>() {
+        @Override
+        public Observable<Integer> call(Integer it) {
+            return Observable.just(it+4);
+        }
+    }).subscribe(new Action1<Integer>() {
+        @Override
+        public void call(Integer it) {
+            System.out.println("flatMap-2: " + it);
+        }
+    });
 #+END_SRC
 
 ***** GroupBy
@@ -719,8 +717,8 @@ Observable.from(Arrays.asList(1, 2, 3, 4, 5))
 #+NAME: GroupBy
 #+BEGIN_SRC
 Observable.range(1, 10).groupBy(it -> it%2 ==0)
-.flatMap(it->it.toList())
-.subscribe(it -> println("GroupBy: " + it));
+    .flatMap(it->it.toList())
+    .subscribe(it -> println("GroupBy: " + it));
 #+END_SRC
 ***** Map
 映射，通過對序列的每一項都應用一個函數變換Observable發射的數據，實質是對序列中的每一項執行一個函數，函數的參數就是這個數據項
@@ -729,23 +727,23 @@ Observable.range(1, 10).groupBy(it -> it%2 ==0)
 #+BEGIN_SRC
 // Map-1
 Observable.just(1, 2, 3, 4, 5)
-.map(it -> it+3)
-.subscribe(it -> System.out.println("map-1: " + it));
+    .map(it -> it+3)
+    .subscribe(it -> System.out.println("map-1: " + it));
 
 // Map-2
 Observable.just(1, 2, 3, 4, 5)
-.map(new Func1<Integer, Integer>() {
-    @Override
-    public Integer call(Integer it) {
-        return it+3;
-    }
-})
-.subscribe(new Action1<Integer>() {
-    @Override
-    public void call(Integer it) {
-        System.out.println("map-2: " + it);
-    }
-});
+    .map(new Func1<Integer, Integer>() {
+        @Override
+        public Integer call(Integer it) {
+            return it+3;
+        }
+    })
+    .subscribe(new Action1<Integer>() {
+        @Override
+        public void call(Integer it) {
+            System.out.println("map-2: " + it);
+        }
+    });
 #+END_SRC
 
 ***** Scan
@@ -754,7 +752,7 @@ Observable.just(1, 2, 3, 4, 5)
 #+NAME: Scan
 #+BEGIN_SRC
 Observable.range(1, 10).scan((sum, it) -> sum += it)
-.subscribe(it -> println("Scan: " + it));
+    .subscribe(it -> println("Scan: " + it));
 #+END_SRC
 
 ***** Window
@@ -764,8 +762,8 @@ Observable.range(1, 10).scan((sum, it) -> sum += it)
 #+NAME: Window
 #+BEGIN_SRC
 Observable.range(1, 100).window(20)
-.flatMap(it -> it.toList())
-.subscribe(it -> println("Window: " + it));
+    .flatMap(it -> it.toList())
+    .subscribe(it -> println("Window: " + it));
 #+END_SRC
 
 **** 過濾操作
@@ -876,6 +874,18 @@ Observable.range(1, 10).takeLast(3)
 無論何時，如果一個Observable發射了一個數據項，只要在另一個Observable發射的數據項定義的時間窗口內，
 就將兩個Observable發射的數據合併發射
 
+#+NAME: Merge
+#+BEGIN_SRC
+Observable<Integer> joinNumbers = Observable.from(Arrays.asList(1, 2, 3, 4, 5));
+Observable<String> joinStrings = Observable.from(Arrays.asList("A", "B", "C"));
+joinNumbers.join(
+    joinStrings,
+    i -> Observable.timer(150, TimeUnit.MILLISECONDS),
+    i -> Observable.timer(0, TimeUnit.MILLISECONDS),
+    (n, s) -> n + "-" + s
+).subscribe(it -> println("Join: " + it));
+#+END_SRC
+
 ***** Merge
 將兩個Observable發射的數據組合併成一個
 
@@ -889,12 +899,27 @@ Observable.merge(odds, evens).subscribe(it -> println("Merge: " + it));
 ***** StartWith
 在發射原來的Observable的數據序列之前，先發射一個指定的數據序列或數據項
 
+#+NAME: StartWith
+#+BEGIN_SRC
+Observable.from(Arrays.asList(1, 2, 3, 4, 5))
+    .startWith(0)
+    .subscribe(it -> println("startWith: " + it));
+#+END_SRC
+
 ***** Switch
 將一個發射Observable序列的Observable轉換為這樣一個Observable：
 它逐個發射那些Observable最近發射的數據
 
 ***** Zip
 打包，使用一個指定的函數將多個Observable發射的數據組合在一起，然後將這個函數的結果作為單項數據發射
+
+#+NAME: Zip
+#+BEGIN_SRC
+Observable<Integer> numberOb = Observable.from(Arrays.asList(1, 2, 3, 4, 5));
+Observable<String> stringOb = Observable.from(Arrays.asList("a", "b", "c", "d", "e"));
+Observable.zip(numberOb, stringOb, (n, s) -> String.format("%d%s", n, s))
+    .subscribe(it -> println("zip: " + it));
+#+END_SRC
 
 **** 錯誤處理
 這些操作符用於從錯誤通知中恢復
