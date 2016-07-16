@@ -330,9 +330,7 @@ asyncSubject.subscribe(it -> println("(AsyncSubject) it: " + it));
 Observable.create(new Observable.OnSubscribe<Integer>() {
     @Override
     public void call(Subscriber<? super Integer> subscriber) {
-        for (int i = 0; i < 5; i++) {
-            subscriber.onNext(i);
-        }
+        IntStream.range(1, 6).forEach(i -> subscriber.onNext(i));
         subscriber.onCompleted();
     }
 })
@@ -368,9 +366,7 @@ behaviorSubject.subscribe((it) -> println("(BehaviorSubject) it: " + it));
 Observable.create(new Observable.OnSubscribe<Integer>() {
     @Override
     public void call(Subscriber<? super Integer> subscriber) {
-        for (int i = 0; i < 5; i++) {
-            subscriber.onNext(i);
-        }
+        IntStream.range(1, 6).forEach(i -> subscriber.onNext(i));
         subscriber.onCompleted();
     }
 })
@@ -408,9 +404,7 @@ publishSubject.subscribe(it -> println("(PublishSubject) it: " + it));
 Observable.create(new Observable.OnSubscribe<Integer>() {
     @Override
     public void call(Subscriber<? super Integer> subscriber) {
-        for (int i = 0; i < 5; i++) {
-            subscriber.onNext(i);
-        }
+        IntStream.range(1, 6).forEach(i -> subscriber.onNext(i));
         subscriber.onCompleted();
     }
 })
@@ -443,9 +437,7 @@ replaySubject.subscribe((it) -> println("(ReplaySubject) it: " + it));
 Observable.create(new Observable.OnSubscribe<Integer>() {
     @Override
     public void call(Subscriber<? super Integer> subscriber) {
-        for (int i = 0; i < 5; i++) {
-            subscriber.onNext(i);
-        }
+        IntStream.range(1, 6).forEach(i -> subscriber.onNext(i));
         subscriber.onCompleted();
     }
 })
