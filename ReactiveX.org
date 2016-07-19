@@ -700,15 +700,13 @@ Observable.create(object : Observable.OnSubscribe<Int> {
 #+BEGIN_SRC
 // Java
 Integer[] items = {1, 2, 3, 4, 5};
-Observable myObservable = Observable.from(items);
-myObservable
-    .map(i -> String.valueOf((int)i*2))
+Observable.from(items)
+    .map(i -> i*2)
     .subscribe(
-        item -> System.out.println("(from) Next:" + item),
-        error -> System.out.println("Error encountered: " + error),
-        () -> System.out.println("Sequence complete.")
+        item -> println("(from) Next:" + item),
+        error -> println("Error encountered: " + error),
+        () -> println("Sequence complete.")
     );
-
 // Kotlin
 Observable.from(listOf(1, 2, 3, 4, 5).map { it -> it+2 })
     .subscribe { it -> println("(from) Next: " + it) }
